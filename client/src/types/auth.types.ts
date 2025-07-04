@@ -20,6 +20,7 @@ export interface RefreshTokenRequest {
 
 // Response Types
 export interface AuthUserResponse {
+  avatar?: string | null;
   id: Types.ObjectId | string;
   email: string;
   firstName: string;

@@ -1,9 +1,16 @@
-
+import { useState } from "react";
+import Header from "@/customcomponents/utils/header";
+import { AuthSection } from "@/customcomponents/Auth";
 
 const EditorDashboard = () => {
-    return (
-        <div>EditorDashboard</div>
-    )
-}
+    const [showAuth, setShowAuth] = useState(false);
 
-export default EditorDashboard
+    return (
+        <div>
+            <Header onShowAuth={() => setShowAuth(true)} />
+            {showAuth && <AuthSection onBack={() => setShowAuth(false)} />}
+        </div>
+    );
+};
+
+export default EditorDashboard;

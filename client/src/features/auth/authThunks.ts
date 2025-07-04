@@ -18,6 +18,7 @@ export const loginThunk = createAsyncThunk<void, LoginRequest>(
           firstName: data.user.firstName,
           lastName: data.user.lastName,
           role: data.user.role,
+          avatar: data.user.avatar ?? null,
         },
       })
     );

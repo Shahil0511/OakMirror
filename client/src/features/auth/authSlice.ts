@@ -13,6 +13,7 @@ export interface AuthState {
     firstName: string;
     lastName: string;
     role: string;
+    avatar?: string | null;
   } | null;
 }
 
@@ -42,9 +43,10 @@ const authSlice = createSlice({
 export const { setAuth, logout } = authSlice.actions;
 
 /* ───────────── Selectors ───────────── */
-export const selectUser = (s: RootState) => s.auth.user;
-export const selectRole = (s: RootState) => s.auth.user?.role ?? null;
+export const selectUser = (s: RootState) => s.auth.user ?? null;
+export const selectRole = (s: RootState) =>
+  s?.auth?.user?.role?.toLowerCase?.() ?? "guest";
 export const selectIsAuthenticated = (s: RootState) =>
-  Boolean(s.auth.accessToken && s.auth.user);
+  Boolean(s?.auth?.accessToken && s?.auth?.user);
 
 export default authSlice.reducer;

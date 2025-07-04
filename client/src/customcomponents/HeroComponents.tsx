@@ -1,11 +1,15 @@
 import { motion } from 'framer-motion';
 import { Building2, Search, ArrowRight, Star, ShieldCheck, Zap, Globe, Users, TrendingUp, Award, Lock } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import Header from './utils/header';
+import { AuthSection } from "@/customcomponents/Auth";
 
 export const HeroSection = ({ onGetStarted }: { onGetStarted: () => void }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [time, setTime] = useState(0);
     const [isMobile, setIsMobile] = useState(false);
+    const [showAuth, setShowAuth] = useState(false);
+
 
     useEffect(() => {
         const checkMobile = () => {
@@ -78,7 +82,17 @@ export const HeroSection = ({ onGetStarted }: { onGetStarted: () => void }) => {
     };
 
     return (
-        <div className="min-h-screen bg-white relative overflow-y-auto flex items-start py-12 px-4">
+        <div className="min-h-screen bg-white relative overflow-y-auto flex flex-col items-start py-12 px-4">
+            {/* Add Header at the top */}
+            <div className="w-full sticky top-0 z-50">
+                <Header onShowAuth={() => setShowAuth(true)} />
+            </div>
+            {showAuth && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+                    <AuthSection onBack={() => setShowAuth(false)} />
+                </div>
+            )}
+
             {/* Background elements */}
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/50 to-indigo-50" />

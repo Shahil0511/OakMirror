@@ -13,6 +13,7 @@ interface StoredUser {
   firstName: string;
   lastName: string;
   role: string;
+  avatar?: string | null;
 }
 
 // Token refresh response type
