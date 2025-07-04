@@ -2,10 +2,9 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
-    "lib": ["ES2022", "DOM"],
+    "lib": ["ES2022"],
     "types": ["node"],
     "typeRoots": ["./node_modules/@types"],
-
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -28,14 +27,15 @@
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "exactOptionalPropertyTypes": true,
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": [".src/*"],
-      "@/config/*": ["./config/*"],
-      "@/middleware/*": ["./middleware/*"],
-      "@/modules/*": ["./modules/*"],
-      "@/types/*": ["./types/*"],
-      "@/utils/*": ["./utils/*"]
+      "@/*": ["*"],
+      "@/config/*": ["config/*"],
+      "@/middleware/*": ["middlewares/*"],
+      "@/modules/*": ["modules/*"],
+      "@/types/*": ["types/*"],
+      "@/utils/*": ["utils/*"],
+      "@/route/*": ["route/*"]
     }
   },
   "include": ["src/**/*"],

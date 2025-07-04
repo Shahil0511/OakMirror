@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
-import { logger } from '@/config/logger';
-import { AppError } from '@/utils/app-error';
+import { logger } from '../config/logger';
+import { AppError } from '../utils/app-error';
 
 export const errorMiddleware = (
   error: unknown,

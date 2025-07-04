@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { securityMiddleware } from '@/middlewares/security.middleware';
-import { errorMiddleware } from '@/middlewares/error.middleware';
-import authRouter from '@/route/auth.routes'; // Import the auth router
+import { securityMiddleware } from './middlewares/security.middleware';
+import { errorMiddleware } from './middlewares/error.middleware';
+import authRouter from './route/auth.routes'; // Import the auth router
 
 const app = express();
 

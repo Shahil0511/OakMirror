@@ -1,4 +1,4 @@
-import { ITodo } from '@/modules/todo/todo.types';
+import { ITodo } from './modules/todo/todo.types';
 
 declare global {
   namespace Express {

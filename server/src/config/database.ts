@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import { config } from '@/config/env';
-import { logger } from '@/config/logger';
+import { config } from '../config/env';
+import { logger } from '../config/logger';
 
 export const connectDatabase = async (): Promise<void> => {
   try {
