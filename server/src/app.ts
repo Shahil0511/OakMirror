@@ -13,7 +13,13 @@ const app = express();
 // ----------------------
 
 app.use(helmet());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: 'https://oakmirror-1.onrender.com',
+    credentials: true,
+  })
+);
 
 // ----------------------
 // Rate limiting
