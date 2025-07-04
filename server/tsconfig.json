@@ -28,9 +28,9 @@
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "exactOptionalPropertyTypes": true,
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./*"],
+      "@/*": [".src/*"],
       "@/config/*": ["./config/*"],
       "@/middleware/*": ["./middleware/*"],
       "@/modules/*": ["./modules/*"],
