@@ -14,9 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
 import { useAppDispatch } from "@/app/hooks";
 
-
 interface HeaderProps {
-    onShowAuth: () => void;   // parent passes a “show login/signup” callback
+    onShowAuth: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onShowAuth }) => {
@@ -46,7 +45,6 @@ const Header: React.FC<HeaderProps> = ({ onShowAuth }) => {
             onShowAuth();
         }
     };
-
 
     const navItems = [
         { name: 'Community', path: '/community', roles: ['admin', 'user'] },
@@ -217,7 +215,6 @@ const Header: React.FC<HeaderProps> = ({ onShowAuth }) => {
                         )}
                     </Button>
                 </motion.div>
-
             </div>
 
             {/* Mobile Navigation */}
