@@ -1,47 +1,87 @@
 import { motion } from 'framer-motion';
 import { Building2, Search, ArrowRight, Star, ShieldCheck, Zap, Globe, Users, TrendingUp, Award, Lock } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '@/app/hooks';
+import { selectRole, selectIsAuthenticated } from "@/features/auth/authSlice";
 import Header from './utils/header';
 import { AuthSection } from "@/customcomponents/Auth";
 
-export const HeroSection = ({ onGetStarted }: { onGetStarted: () => void }) => {
+export const HeroSection = () => {
+    const navigate = useNavigate();
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [time, setTime] = useState(0);
     const [isMobile, setIsMobile] = useState(false);
     const [showAuth, setShowAuth] = useState(false);
 
+    // Get auth state using selectors (optimized with direct selectors)
+    const role = useAppSelector(selectRole);
+    const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
+    // Memoize the authentication handler to prevent unnecessary re-renders
+    const handleGetStarted = useCallback(() => {
+        if (isAuthenticated) {
+            // If already authenticated, navigate to dashboard based on role
+            switch (role) {
+                case "admin":
+                    navigate("/admin");
+                    break;
+                case "editor":
+                    navigate("/editor");
+                    break;
+                default:
+                    navigate("/dashboard");
+                    break;
+            }
+        } else {
+            // If not authenticated, show auth modal
+            setShowAuth(true);
+        }
+    }, [isAuthenticated, role, navigate]);
+
+    // Memoize the auth modal handler
+    const handleShowAuth = useCallback(() => setShowAuth(true), []);
+    const handleHideAuth = useCallback(() => setShowAuth(false), []);
+
+    // Memoize mobile check to prevent unnecessary re-renders
+    const checkMobile = useCallback(() => {
+        setIsMobile(window.innerWidth < 640);
+    }, []);
+
+    // Memoize mouse move handler
+    const handleMouseMove = useCallback((e: MouseEvent) => {
+        setMousePosition({
+            x: (e.clientX / window.innerWidth) * 100,
+            y: (e.clientY / window.innerHeight) * 100
+        });
+    }, []);
+
+    // Optimized effects
     useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth < 640);
-        };
-
         checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+    }, [checkMobile]);
 
     useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
-            setMousePosition({
-                x: (e.clientX / window.innerWidth) * 100,
-                y: (e.clientY / window.innerHeight) * 100
-            });
-        };
-
         const timer = setInterval(() => {
             setTime(prev => prev + 0.01);
         }, 16);
 
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            clearInterval(timer);
-        };
-    }, []);
+        if (!isMobile) {
+            window.addEventListener('mousemove', handleMouseMove);
+        }
 
-    // Floating particles component
-    const FloatingElements = () => {
+        return () => {
+            clearInterval(timer);
+            if (!isMobile) {
+                window.removeEventListener('mousemove', handleMouseMove);
+            }
+        };
+    }, [isMobile, handleMouseMove]);
+
+    // Memoize floating elements to prevent recalculation
+    const FloatingElements = useMemo(() => {
         const elements = Array.from({ length: isMobile ? 12 : 25 }, (_, i) => ({
             id: i,
             x: Math.random() * 100,
@@ -51,7 +91,7 @@ export const HeroSection = ({ onGetStarted }: { onGetStarted: () => void }) => {
             delay: Math.random() * 4,
         }));
 
-        return (
+        return () => (
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 {elements.map((element) => (
                     <motion.div
@@ -79,17 +119,42 @@ export const HeroSection = ({ onGetStarted }: { onGetStarted: () => void }) => {
                 ))}
             </div>
         );
-    };
+    }, [isMobile, time]);
+
+    // Memoize feature badges data
+    const featureBadges = useMemo(() => [
+        { icon: Star, text: "Industry Leading", color: "from-yellow-500 to-orange-500" },
+        { icon: ShieldCheck, text: "Enterprise Security", color: "from-green-500 to-emerald-500" },
+        { icon: Zap, text: "Real-time Analytics", color: "from-purple-500 to-pink-500" },
+        { icon: Lock, text: "Compliance Ready", color: "from-blue-500 to-cyan-500" }
+    ], []);
+
+    // Memoize stats data
+    const statsData = useMemo(() => [
+        { value: "Fortune 500", label: "Companies", icon: Building2, color: "from-blue-500 to-blue-600" },
+        { value: "10M+", label: "Data Points", icon: TrendingUp, color: "from-green-500 to-emerald-600" },
+        { value: "2M+", label: "Professionals", icon: Users, color: "from-purple-500 to-purple-600" },
+        { value: "99.9%", label: "Uptime SLA", icon: Zap, color: "from-yellow-500 to-orange-500" },
+        { value: "150+", label: "Countries", icon: Globe, color: "from-cyan-500 to-blue-500" },
+        { value: "SOC 2", label: "Compliant", icon: ShieldCheck, color: "from-green-500 to-teal-500" },
+    ], []);
+
+    // Memoize button text based on auth state
+    const buttonText = useMemo(() => {
+        return isAuthenticated ? 'Go to Dashboard' : 'Get Started';
+    }, [isAuthenticated]);
 
     return (
         <div className="min-h-screen bg-white relative overflow-y-auto flex flex-col items-start py-12 px-4">
             {/* Add Header at the top */}
             <div className="w-full sticky top-0 z-50">
-                <Header onShowAuth={() => setShowAuth(true)} />
+                <Header onShowAuth={handleShowAuth} />
             </div>
+
+            {/* Auth Modal - Optimized rendering */}
             {showAuth && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-                    <AuthSection onBack={() => setShowAuth(false)} />
+                    <AuthSection onBack={handleHideAuth} />
                 </div>
             )}
 
@@ -182,7 +247,6 @@ export const HeroSection = ({ onGetStarted }: { onGetStarted: () => void }) => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4, duration: 0.8 }}
                         className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 mb-6 leading-tight tracking-tight px-4"
-
                     >
                         <motion.span
                             className="block bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent"
@@ -250,25 +314,21 @@ export const HeroSection = ({ onGetStarted }: { onGetStarted: () => void }) => {
                                         className="w-full pl-16 pr-6 py-4 lg:py-5 bg-transparent text-gray-900 placeholder-gray-500 text-lg rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all duration-300"
                                     />
                                 </div>
-                                <button
-                                    onClick={onGetStarted}
-                                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4  rounded-xl font-bold text-lg flex items-center justify-center gap-3  "
+                                <motion.button
+                                    onClick={handleGetStarted}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-300"
                                 >
-                                    <span>Get Started</span>
+                                    <span>{buttonText}</span>
                                     <ArrowRight className="w-6 h-6" />
-                                </button>
-
+                                </motion.button>
                             </motion.div>
                         </div>
 
                         {/* Premium feature badges */}
                         <div className="mt-6 flex flex-wrap justify-center gap-4">
-                            {[
-                                { icon: Star, text: "Industry Leading", color: "from-yellow-500 to-orange-500" },
-                                { icon: ShieldCheck, text: "Enterprise Security", color: "from-green-500 to-emerald-500" },
-                                { icon: Zap, text: "Real-time Analytics", color: "from-purple-500 to-pink-500" },
-                                { icon: Lock, text: "Compliance Ready", color: "from-blue-500 to-cyan-500" }
-                            ].map((feature, i) => (
+                            {featureBadges.map((feature, i) => (
                                 <motion.div
                                     key={feature.text}
                                     initial={{ opacity: 0, y: 20 }}
@@ -295,14 +355,7 @@ export const HeroSection = ({ onGetStarted }: { onGetStarted: () => void }) => {
                         transition={{ delay: 1.2, duration: 0.8 }}
                         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 max-w-6xl mx-auto"
                     >
-                        {[
-                            { value: "Fortune 500", label: "Companies", icon: Building2, color: "from-blue-500 to-blue-600" },
-                            { value: "10M+", label: "Data Points", icon: TrendingUp, color: "from-green-500 to-emerald-600" },
-                            { value: "2M+", label: "Professionals", icon: Users, color: "from-purple-500 to-purple-600" },
-                            { value: "99.9%", label: "Uptime SLA", icon: Zap, color: "from-yellow-500 to-orange-500" },
-                            { value: "150+", label: "Countries", icon: Globe, color: "from-cyan-500 to-blue-500" },
-                            { value: "SOC 2", label: "Compliant", icon: ShieldCheck, color: "from-green-500 to-teal-500" },
-                        ].map((stat, i) => (
+                        {statsData.map((stat, i) => (
                             <motion.div
                                 key={stat.label}
                                 initial={{ y: 30, opacity: 0 }}

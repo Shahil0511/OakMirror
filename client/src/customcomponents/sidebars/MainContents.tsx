@@ -1,5 +1,7 @@
-import { Building, MoreHorizontal, Heart, MessageCircle, Share2, Plus, Briefcase } from "lucide-react";
+import { Building, MoreHorizontal, Heart, MessageCircle, Share2, Briefcase } from "lucide-react";
 import { useState } from "react";
+import CreatePost from "../utils/CreatePost";
+
 
 const MainContents = () => {
     const [liked, setLiked] = useState(false);
@@ -9,10 +11,7 @@ const MainContents = () => {
             <div className="space-y-6">
                 {/* Action Buttons at Top */}
                 <div className="flex flex-col sm:flex-row gap-3">
-                    <button className="flex-1 bg-black text-white py-3 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-800 transition-colors">
-                        <Plus className="w-5 h-5" />
-                        <span>Create Post</span>
-                    </button>
+                    <CreatePost width="medium" />
                     <button className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-blue-700 transition-colors">
                         <Briefcase className="w-5 h-5" />
                         <span>Post Job</span>
@@ -38,6 +37,7 @@ const MainContents = () => {
                         <div className="absolute inset-0 flex items-center justify-center p-4">
                             <div className="text-center text-white">
                                 <div className="text-4xl sm:text-6xl mb-2 sm:mb-4">🚀</div>
+                                {/* <RocketRunner /> */}
                                 <div className="text-lg sm:text-xl font-bold">Interested in Startups?</div>
                                 <div className="text-xs sm:text-sm mt-1 sm:mt-2 max-w-md">
                                     We have a new bowl for you! Click through here to check out the Indian Startups community and connect with like-minded people.

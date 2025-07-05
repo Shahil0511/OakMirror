@@ -5,6 +5,7 @@ import EditorDashboard from "./page/EditorDashboard"
 import AdminDashboard from "./page/AdminDashboard"
 import Dashboard from "./page/Dashboard"
 import ProtectedRoute from "./routes/ProtectedRoutes"
+import Post from "./page/Post"
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/user" element={<Dashboard />} />
+        </Route>
+        <Route element={<ProtectedRoute allowedRoles={['admin', 'editor']} />}>
+          <Route path="/post" element={<Post />} />
         </Route>
 
       </Routes>

@@ -1,25 +1,9 @@
-import { Building, Plus, Users } from "lucide-react";
+import { Building, Users } from "lucide-react";
+import CreatePost from "../utils/CreatePost";
 
-interface LeftSidebarUserProps {
-    onCloseMobile?: () => void;
-}
-
-const LeftSidebarUser: React.FC<LeftSidebarUserProps> = ({ onCloseMobile }) => {
+const LeftSidebarUser: React.FC = () => {
     return (
         <div className="w-full h-full bg-white border-r border-gray-200 p-4 md:p-6 overflow-y-auto">
-            {/* Mobile close button */}
-            {onCloseMobile && (
-                <button
-                    onClick={onCloseMobile}
-                    className="md:hidden mb-4 p-2 rounded-full hover:bg-gray-100 absolute top-2 right-2"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            )}
-
             <div className="space-y-6">
                 {/* Post Creation Section */}
                 <div className="text-center space-y-4">
@@ -32,13 +16,10 @@ const LeftSidebarUser: React.FC<LeftSidebarUserProps> = ({ onCloseMobile }) => {
                             <div className="text-xs sm:text-sm font-medium">Software Engineer</div>
                         </div>
                     </div>
-                    <button className="w-full bg-black text-white py-2 md:py-3 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-800 transition-colors">
-                        <Plus className="w-4 sm:w-5 h-4 sm:h-5" />
-                        <span className="text-xs sm:text-sm">Create post</span>
-                    </button>
+                    <CreatePost width="large" />
                 </div>
 
-                {/* My Bowls Section */}
+                {/* My Oaks Section */}
                 <div>
                     <h3 className="text-base sm:text-lg font-semibold mb-4">My Oaks</h3>
                     <div className="space-y-3">
@@ -51,7 +32,7 @@ const LeftSidebarUser: React.FC<LeftSidebarUserProps> = ({ onCloseMobile }) => {
                     </div>
                 </div>
 
-                {/* Explore Bowls Button */}
+                {/* Explore Oaks Button */}
                 <button className="w-full border border-gray-300 py-2 md:py-3 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-50 transition-colors">
                     <Users className="w-4 sm:w-5 h-4 sm:h-5 text-gray-600" />
                     <span className="text-xs sm:text-sm font-medium">Explore Oaks</span>

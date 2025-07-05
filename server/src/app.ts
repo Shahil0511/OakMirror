@@ -16,7 +16,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: 'https://oakmirror-1.onrender.com',
+    origin: ['https://oakmirror-1.onrender.com', 'http://localhost:5173'],
     credentials: true,
   })
 );

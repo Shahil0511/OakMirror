@@ -43,9 +43,9 @@ export const RightSidebar = () => {
         <div className="w-full h-full bg-white border-l border-gray-200 p-4 sm:p-6 overflow-y-auto">
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-base sm:text-lg font-semibold">Bowls for you</h3>
+                    <h3 className="text-base sm:text-lg font-semibold">Oaks for you</h3>
                     <button className="text-green-600 text-xs sm:text-sm hover:text-green-700 transition-colors">
-                        Explore all Bowls →
+                        Explore all Oaks →
                     </button>
                 </div>
 
