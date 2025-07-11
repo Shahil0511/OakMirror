@@ -10,6 +10,7 @@ const EditorDashboard = () => {
     const [showAuth, setShowAuth] = useState(false);
     const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
     const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
+    const [showCreatePostForm, setShowCreatePostForm] = useState(false);
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
@@ -55,13 +56,16 @@ const EditorDashboard = () => {
                             <X className="w-5 h-5" />
                         </button>
                     </div>
-                    <LeftSidebarUser />
+                    <LeftSidebarUser onCreatePostClick={() => setShowCreatePostForm(true)} />
                 </div>
 
                 {/* Main Content Area */}
                 <div className="flex-1 overflow-hidden">
                     <div className="h-full overflow-y-auto p-4 sm:p-6">
-                        <MainContents />
+                        <MainContents
+                            showCreatePostForm={showCreatePostForm}
+                            setShowCreatePostForm={setShowCreatePostForm}
+                        />
                     </div>
                 </div>
 

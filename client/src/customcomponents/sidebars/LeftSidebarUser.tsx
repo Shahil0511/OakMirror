@@ -1,7 +1,11 @@
 import { Building, Users } from "lucide-react";
 import CreatePost from "../utils/CreatePost";
 
-const LeftSidebarUser: React.FC = () => {
+interface LeftSidebarUserProps {
+    onCreatePostClick: () => void;
+}
+
+const LeftSidebarUser: React.FC<LeftSidebarUserProps> = ({ onCreatePostClick }) => {
     return (
         <div className="w-full h-full bg-white border-r border-gray-200 p-4 md:p-6 overflow-y-auto">
             <div className="space-y-6">
@@ -16,7 +20,8 @@ const LeftSidebarUser: React.FC = () => {
                             <div className="text-xs sm:text-sm font-medium">Software Engineer</div>
                         </div>
                     </div>
-                    <CreatePost width="large" />
+
+                    <CreatePost width="large" onClick={onCreatePostClick} />
                 </div>
 
                 {/* My Oaks Section */}

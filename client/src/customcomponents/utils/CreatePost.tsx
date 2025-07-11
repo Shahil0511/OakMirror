@@ -1,9 +1,10 @@
 import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
+import { useSelector } from "react-redux";
+import type { RootState } from "@/app/store";
 
 interface CreatePostProps {
     width?: "small" | "medium" | "large";
+    onClick: () => void;
 }
 
 const sizeMap: Record<NonNullable<CreatePostProps["width"]>, string> = {
@@ -12,18 +13,18 @@ const sizeMap: Record<NonNullable<CreatePostProps["width"]>, string> = {
     large: "w-full",
 };
 
+const CreatePost: React.FC<CreatePostProps> = ({ width = "large", onClick }) => {
+    const user = useSelector((state: RootState) => state.auth.user);
+    const role = user?.role?.toLowerCase?.() ?? "guest";
 
-
-const CreatePost: React.FC<CreatePostProps> = ({ width = "large" }) => {
-    const navigate = useNavigate()
-
-    const handleClick = () => {
-        navigate("/post")
+    if (!user || !["admin", "editor"].includes(role)) {
+        return null;
     }
+
     return (
         <button
             className={`${sizeMap[width]} bg-black text-white py-2 md:py-3 px-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-gray-800 transition-colors`}
-            onClick={handleClick}
+            onClick={onClick}
         >
             <Plus className="w-4 sm:w-5 h-4 sm:h-5" />
             <span className="text-xs sm:text-sm">Create post</span>
