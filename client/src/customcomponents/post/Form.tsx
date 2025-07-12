@@ -21,6 +21,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/app/store";
 
 interface PostFormValues {
     title: string;
@@ -30,25 +32,24 @@ interface PostFormValues {
     company?: string;
     jobTitle?: string;
     location?: string;
-
     tags?: string[];
 }
 
 interface CreatePostFormProps {
     onClose: () => void;
-    onSubmit: (title: string, content: string) => void
+    onSubmit?: (title: string, content: string) => void;
 }
 
-const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onSubmit }) => {
+const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose }) => {
     const [newTag, setNewTag] = useState("");
     const [tags, setTags] = useState<string[]>([]);
+    const token = useSelector((state: RootState) => state.auth.accessToken); // Moved to component level
 
     const form = useForm<PostFormValues>({
         defaultValues: {
             title: "",
             content: "",
             postType: "general",
-
             tags: [],
         },
     });
@@ -68,9 +69,34 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onSubmit }) =>
         form.setValue("tags", updatedTags);
     };
 
-    const handleSubmit = (values: PostFormValues) => {
-        console.log("Form submitted:", values);
-        onSubmit(values.title, values.content);
+    const handleSubmit = async (values: PostFormValues) => {
+        try {
+            console.log("Form submitted:", values);
+
+            const response = await fetch('http://localhost:4000/api/post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(values),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error('Error:', data.message);
+                alert('Post creation failed: ' + data.message);
+                return;
+            }
+
+            console.log('Post created successfully:', data);
+            alert('Post created!');
+            onClose(); // Close the form after successful submission
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert('Something went wrong while submitting the post');
+        }
     };
 
     return (
@@ -262,7 +288,6 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose, onSubmit }) =>
                             </Button>
                         </div>
                     </div>
-
 
                     <div className="flex justify-end gap-4 pt-4">
                         <Button

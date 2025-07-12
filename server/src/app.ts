@@ -4,7 +4,8 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { securityMiddleware } from './middlewares/security.middleware';
 import { errorMiddleware } from './middlewares/error.middleware';
-import authRouter from './route/auth.routes'; // Import the auth router
+import authRouter from './route/auth.routes';
+import postRouter from './route/post.routes';
 
 const app = express();
 
@@ -60,10 +61,10 @@ app.get('/health', (req, res) => {
 // ----------------------
 // Main API Routes
 // ----------------------
-console.log('[ROUTE] Registering /api routes');
 
 // Add the authentication routes under /api/auth prefix
 app.use('/api/auth', authRouter);
+app.use('/api/post', postRouter);
 
 // ----------------------
 // 404 Catch-All
