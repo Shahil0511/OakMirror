@@ -1,6 +1,15 @@
-import { Eye, Users } from "lucide-react";
+import { Eye, Users, X } from "lucide-react";
+import { motion } from "framer-motion";
 
-export const RightSidebar = () => {
+interface RightSidebarProps {
+    isMobile?: boolean;
+    onClose?: () => void;
+}
+
+export const RightSidebar: React.FC<RightSidebarProps> = ({
+    isMobile = false,
+    onClose
+}) => {
     const bowls = [
         {
             id: 1,
@@ -40,18 +49,43 @@ export const RightSidebar = () => {
     ];
 
     return (
-        <div className="w-full h-full bg-white border-l border-gray-200 p-4 sm:p-6 overflow-y-auto">
+        <div className="h-full bg-white border-l border-gray-200 p-4 sm:p-6 overflow-y-auto relative">
+            {/* Close Button for Mobile */}
+            {isMobile && onClose && (
+                <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onClose}
+                    className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-100 z-10"
+                >
+                    <X className="w-5 h-5" />
+                </motion.button>
+            )}
+
             <div className="space-y-6">
-                <div className="flex items-center justify-between">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center justify-between"
+                >
                     <h3 className="text-base sm:text-lg font-semibold">Oaks for you</h3>
-                    <button className="text-green-600 text-xs sm:text-sm hover:text-green-700 transition-colors">
+                    <motion.button
+                        whileHover={{ x: 2 }}
+                        className="text-green-600 text-xs sm:text-sm hover:text-green-700 transition-colors"
+                    >
                         Explore all Oaks →
-                    </button>
-                </div>
+                    </motion.button>
+                </motion.div>
 
                 <div className="space-y-4">
-                    {bowls.map((bowl) => (
-                        <div key={bowl.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-sm transition-shadow">
+                    {bowls.map((bowl, index) => (
+                        <motion.div
+                            key={bowl.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                            whileHover={{ scale: 1.01 }}
+                            className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-sm transition-shadow"
+                        >
                             <div className="flex items-start space-x-3">
                                 <div className={`w-8 h-8 sm:w-10 sm:h-10 ${bowl.color} rounded-full flex items-center justify-center shrink-0`}>
                                     <Users className="w-4 sm:w-5 h-4 sm:h-5 text-gray-600" />
@@ -61,17 +95,25 @@ export const RightSidebar = () => {
                                     <p className="text-xs text-gray-600 mb-2 line-clamp-2">{bowl.description}</p>
                                     <div className="text-xs text-gray-500 mb-3">{bowl.members} members</div>
                                     <div className="flex space-x-2">
-                                        <button className="flex items-center space-x-1 text-xs border border-gray-300 px-2 sm:px-3 py-1 rounded hover:bg-gray-50 transition-colors">
+                                        <motion.button
+                                            whileHover={{ backgroundColor: "#f3f4f6" }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="flex items-center space-x-1 text-xs border border-gray-300 px-2 sm:px-3 py-1 rounded transition-colors"
+                                        >
                                             <Eye className="w-3 h-3" />
                                             <span>View</span>
-                                        </button>
-                                        <button className="text-xs bg-green-600 text-white px-2 sm:px-3 py-1 rounded hover:bg-green-700 transition-colors">
+                                        </motion.button>
+                                        <motion.button
+                                            whileHover={{ backgroundColor: "#059669" }}
+                                            whileTap={{ scale: 0.95 }}
+                                            className="text-xs bg-green-600 text-white px-2 sm:px-3 py-1 rounded transition-colors"
+                                        >
                                             Join
-                                        </button>
+                                        </motion.button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>
