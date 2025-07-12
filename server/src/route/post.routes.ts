@@ -15,12 +15,16 @@ import {
 import authenticate from '../middlewares/authenticate';
 
 const router = Router();
-router.use(authenticate);
 
 // Optionally enable this if you have auth middleware:
 // router.use(authenticate);
 
 // ✅ Cast handlers to `RequestHandler` to avoid TS conflict
+router.use((req, res, next) => {
+  console.log('📡 Unknown route inside /post:', req.method, req.url);
+  next();
+});
+
 router.post(
   '/',
   authenticate,
@@ -30,7 +34,7 @@ router.post(
 router.get(
   '/',
   authenticate,
-  validateRequest.query(getPostsQuerySchema),
+  // validateRequest.query(getPostsQuerySchema),
   getAllPosts as RequestHandler
 );
 router.get('/:id', authenticate, getPostById as RequestHandler);

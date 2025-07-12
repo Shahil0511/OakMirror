@@ -22,6 +22,7 @@ export const validateRequest = {
         next();
       } catch (err) {
         if (err instanceof ZodError) {
+          console.error('❌ Body validation failed:', formatZodError(err)); // <== Add this
           res.status(400).json({
             status: 'error',
             message: 'Validation failed',
@@ -40,6 +41,8 @@ export const validateRequest = {
         next();
       } catch (err) {
         if (err instanceof ZodError) {
+          console.error('❌ Params validation failed:', formatZodError(err));
+
           res.status(400).json({
             status: 'error',
             message: 'Invalid URL parameters',
@@ -58,6 +61,8 @@ export const validateRequest = {
         next();
       } catch (err) {
         if (err instanceof ZodError) {
+          console.error('❌ Query validation failed:', formatZodError(err));
+
           res.status(400).json({
             status: 'error',
             message: 'Invalid query parameters',

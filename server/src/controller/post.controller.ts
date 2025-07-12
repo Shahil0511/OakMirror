@@ -9,7 +9,6 @@ export const createPost = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    console.log('route hit');
     const postData = {
       ...req.body,
       publisher: req.user._id,

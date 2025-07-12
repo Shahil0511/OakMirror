@@ -1,29 +1,46 @@
-import {
-    Building,
-    MoreHorizontal,
-    Heart,
-    MessageCircle,
-    Share2,
-    Briefcase,
-} from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Building, Briefcase } from "lucide-react";
 import CreatePost from "../utils/CreatePost";
 import CreatePostForm from "../../customcomponents/post/Form";
+import PostCard from "../utils/PostCards";
+import { postService } from "@/services/post.service";
 
-interface MainContentsProps {
-    showCreatePostForm: boolean;
-    setShowCreatePostForm: React.Dispatch<React.SetStateAction<boolean>>;
-}
+const MainContents: React.FC = () => {
+    const [showCreatePostForm, setShowCreatePostForm] = useState(false);
+    const [posts, setPosts] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-const MainContents: React.FC<MainContentsProps> = ({
-    showCreatePostForm,
-    setShowCreatePostForm,
-}) => {
-    const [liked, setLiked] = useState(false);
+    useEffect(() => {
+        const fetchPosts = async () => {
+            try {
+                setLoading(true);
+                const response = await postService.getPosts();
+                setPosts(response.data);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : "Failed to fetch posts");
+                console.error("Error fetching posts:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const handlePostSubmit = () => {
-        setShowCreatePostForm(false);
+        fetchPosts();
+    }, []);
+
+    const handlePostSubmit = async (postData: any) => {
+        try {
+            const newPost = await postService.createPost(postData);
+            setPosts(prev => [newPost, ...prev]);
+            setShowCreatePostForm(false);
+        } catch (err) {
+            console.error("Error creating post:", err);
+            alert(err instanceof Error ? err.message : "Failed to create post");
+        }
     };
+
+    if (loading) return <div className="p-4 text-center">Loading posts...</div>;
+    if (error) return <div className="p-4 text-center text-red-500">{error}</div>;
 
     return (
         <div className="flex-1 p-4 sm:p-6 max-w-4xl mx-auto w-full">
@@ -60,74 +77,30 @@ const MainContents: React.FC<MainContentsProps> = ({
                     </div>
                 </div>
 
-                {/* Startup Interest Section */}
-                <div className="bg-white rounded-lg border overflow-hidden">
-                    {/* Header */}
-                    <div className="h-40 sm:h-48 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 relative">
-                        <div className="absolute inset-0 flex items-center justify-center p-4">
-                            <div className="text-center text-white">
-                                <div className="text-5xl mb-2">🚀</div>
-                                <div className="text-xl font-bold">Interested in Startups?</div>
-                                <div className="text-sm mt-1 max-w-md">
-                                    Join the Indian Startups community and connect with like-minded people.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                {/* Posts List */}
+                <div className="space-y-4">
+                    {posts.map((post) => (
+                        <PostCard
+                            key={post._id} // or post.id if transformed
+                            id={post._id}
+                            title={post.title}
+                            content={post.content}
+                            postType={post.postType}
+                            industry={post.industry}
+                            company={post.company}
+                            jobTitle={post.jobTitle}
+                            location={post.location}
+                            tags={post.tags || []}
+                            createdAt={post.createdAt}
+                            author={{
+                                firstName: post.createdBy?.firstName || "Anonymous",
+                                lastName: post.createdBy?.lastName || "",
+                            }}
+                            totalComments={0}
+                            totalReactions={0}
+                        />
+                    ))}
 
-                    {/* Content */}
-                    <div className="p-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="text-sm text-green-600">
-                                2 Software Engineers commented on this post
-                            </div>
-                            <MoreHorizontal className="w-5 h-5 text-gray-400 cursor-pointer" />
-                        </div>
-
-                        <div className="flex items-center space-x-3 mb-4">
-                            <div className="w-8 h-8 bg-orange-100 rounded flex items-center justify-center">
-                                <Building className="w-4 h-4 text-orange-600" />
-                            </div>
-                            <div>
-                                <div className="text-sm font-medium">Tech India</div>
-                                <div className="text-xs text-gray-500">works at IBM</div>
-                            </div>
-                        </div>
-
-                        <p className="text-sm text-gray-700 mb-4">
-                            Let's start with the Organisation—days of strict working from office &
-                            Location <span className="text-blue-600 font-medium">IBM</span>,{" "}
-                            <span className="text-blue-600 font-medium">TCS</span>,{" "}
-                            <span className="text-blue-600 font-medium">Deloitte</span>,{" "}
-                            <span className="text-blue-600 font-medium">EY</span>,{" "}
-                            <span className="text-blue-600 font-medium">Accenture</span>.
-                        </p>
-
-                        {/* Reactions */}
-                        <div className="flex items-center justify-between border-t pt-4">
-                            <div className="flex items-center space-x-4">
-                                <button
-                                    onClick={() => setLiked(!liked)}
-                                    className={`flex items-center space-x-2 ${liked ? "text-red-500" : "text-gray-500"
-                                        } hover:text-red-500 transition-colors`}
-                                >
-                                    <Heart
-                                        className={`w-5 h-5 ${liked ? "fill-current" : ""}`}
-                                    />
-                                    <span className="text-sm">Like</span>
-                                </button>
-                                <div className="flex items-center space-x-2 text-gray-500">
-                                    <MessageCircle className="w-5 h-5" />
-                                    <span className="text-sm">160 Comments</span>
-                                </div>
-                                <div className="flex items-center space-x-2 text-gray-500">
-                                    <Share2 className="w-5 h-5" />
-                                    <span className="text-sm">Share</span>
-                                </div>
-                            </div>
-                            <div className="text-sm text-gray-500">53 reactions</div>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Motivation Footer */}

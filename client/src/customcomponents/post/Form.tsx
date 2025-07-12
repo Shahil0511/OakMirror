@@ -16,13 +16,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/app/store";
+import { postService } from "@/services/post.service";
+import { toast } from "sonner";
 
 interface PostFormValues {
     title: string;
@@ -43,7 +42,7 @@ interface CreatePostFormProps {
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose }) => {
     const [newTag, setNewTag] = useState("");
     const [tags, setTags] = useState<string[]>([]);
-    const token = useSelector((state: RootState) => state.auth.accessToken); // Moved to component level
+
 
     const form = useForm<PostFormValues>({
         defaultValues: {
@@ -71,31 +70,13 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ onClose }) => {
 
     const handleSubmit = async (values: PostFormValues) => {
         try {
-            console.log("Form submitted:", values);
-
-            const response = await fetch('http://localhost:4000/api/post', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(values),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                console.error('Error:', data.message);
-                alert('Post creation failed: ' + data.message);
-                return;
-            }
-
-            console.log('Post created successfully:', data);
-            alert('Post created!');
-            onClose(); // Close the form after successful submission
+            await postService.createPost(values);
+            toast.success("Post created successfully!");
+            onClose();
         } catch (error) {
-            console.error('Submission error:', error);
-            alert('Something went wrong while submitting the post');
+            toast.error(
+                error instanceof Error ? error.message : "Failed to create post" // ✅ Sonner version
+            );
         }
     };
 
